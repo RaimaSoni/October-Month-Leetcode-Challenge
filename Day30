@@ -1,0 +1,35 @@
+class Solution {
+public:
+    bool isValid(int x, int y, int m, int n){
+        return x>=0 && x<m && y>=0 && y<n;    
+    }
+    
+    int shortestPath(vector<vector<int>>& grid, int k) {
+        int m=grid.size(), n=grid[0].size();
+        bool vis[m][n][k+1];
+        vector<int> dirs = {0,1,0,-1,0};
+        memset(vis, false, sizeof vis);
+        queue<vector<int>> q;
+        q.push({0,0,0,0});
+        vis[0][0][0]=true;
+        while(!q.empty()){
+            vector<int> front = q.front();
+            q.pop();
+            int currx=front[0], curry=front[1], currk=front[2], currdist=front[3];
+            if(currx==m-1 && curry==n-1){
+                return currdist;
+            }
+            for(int i=0;i<4;++i){
+                int newx=currx+dirs[i], newy=curry+dirs[i+1];
+                if(isValid(newx, newy, m, n)){
+                    int newk = currk + grid[newx][newy];
+                    if(newk<=k && !vis[newx][newy][newk]){
+                        vis[newx][newy][newk]=true;
+                        q.push({newx, newy, newk, currdist+1});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
